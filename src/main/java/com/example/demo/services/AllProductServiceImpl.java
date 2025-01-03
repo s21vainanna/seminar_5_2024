@@ -21,17 +21,19 @@ public class AllProductServiceImpl implements IProduct, ICRUDProductService {
 	
 	@Autowired
     private ProductRepository productRepository;
-
-    public ArrayList<Product> productList = new ArrayList<>(Arrays.asList(new Product("Abols", 0.69, "abols ir sarkans", 5, "vainovska", 23),
+/*
+    public ArrayList<Product> productList = new ArrayList<>(Arrays.asList(new Product("Abols", 0.69, "abols ir sarkans", 5, "Vainovska", 23),
             new Product("Burkans", 0.50, "burkans ir veseligs", 18, "Davis", 24),
             new Product("Bumbiers", 0.89, "bumbiers ir zals", 1, "Clark", 16)));
-
+*/
+	public ArrayList<Product> productList = new ArrayList<>();
+	
     @Override
     public ArrayList<Product> selectAllProducts() throws Exception {
         if (productList.isEmpty()) {
             throw new Exception("Product list is empty.");
         }
-        return productList;
+        return (ArrayList<Product>) productRepository.findAll();
     }
 
     @Override
@@ -57,13 +59,15 @@ public class AllProductServiceImpl implements IProduct, ICRUDProductService {
         }
         // newProduct = new Product(); // This overwrites the passed object!
         productList.add(newProduct);
-
+        productRepository.save(newProduct);
+       
     }
 
     @Override
-    public void insertNewProductByParameters(String title, double price, String description, int quantity, String surname, int age) {
-    	Product newProduct = new Product(title, price, description, quantity, surname, age);
-        productList.add(newProduct);
+    public void insertNewProductByParameters(Product product) {
+    	//Product product = new Product(product);
+        productList.add(product);
+        productRepository.save(product);
     
     }
 
@@ -138,8 +142,14 @@ public class AllProductServiceImpl implements IProduct, ICRUDProductService {
 		// TODO Auto-generated method stub
 		
 	}
+	
 	@PostConstruct
 	public void syncExistingProductsToDatabase() {
+		
+		if (!productList.isEmpty()) {
+	        productRepository.saveAll(productList);  // Save all in one batch
+	    }
+	/*	
 	    List<Product> copyList = new ArrayList<>(productList);  // Create a copy of the list
 	    for (Product product : copyList) {
 	        try {
@@ -150,7 +160,7 @@ public class AllProductServiceImpl implements IProduct, ICRUDProductService {
 	            // Log the exception or handle it accordingly
 	            System.err.println("Error saving product: " + e.getMessage());
 	        }
-	    }
+	    }*/
 	}
 
 	

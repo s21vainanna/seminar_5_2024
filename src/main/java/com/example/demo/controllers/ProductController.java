@@ -3,9 +3,13 @@ package com.example.demo.controllers;
 import com.example.demo.ifaces.ICRUDProductService;
 import com.example.demo.models.Product;
 import com.example.demo.services.AllProductServiceImpl;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +69,25 @@ public class ProductController {
         model.addAttribute("product", new Product());
         return "insert-product-page-params";  
     }
+    
+    @PostMapping("/insertProductByParams")
+    public String insertProduct(
+            @ModelAttribute @Valid Product product,   // Bind the incoming form data to Product and validate it
+            BindingResult result) {                   // To capture validation errors
 
+        if (result.hasErrors()) {
+            // If validation errors exist, return to the form with the validation errors
+            return "product-form";  // Replace with your form view name
+        }
+
+        // If no validation errors, insert the product
+        productService.insertNewProductByParameters(product);
+
+        // Redirect to the product list page after insertion
+        return "redirect:/product/selectAll";
+    }
+
+/*
     // POST Mapping: Handle the form submission to add the product
     @PostMapping("/insertProductByParams")
     public String insertProduct(
@@ -81,7 +103,7 @@ public class ProductController {
         
         // Redirect to the product list page after insertion
         return "redirect:/product/selectAll";
-    }   
+    }   */
     
     /*
     @PostMapping("/insertProductByParams")

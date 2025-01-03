@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class MySQLConnecter {
     public static void main(String[] args) {
         // Replace with your database details
-        String jdbcURL = "jdbc:mysql://localhost:3306/Product";
+        String jdbcURL = "jdbc:mysql://localhost:3306/Groceries";
         String dbUser = "root";
         String dbPassword = "trakikaki32";
 
