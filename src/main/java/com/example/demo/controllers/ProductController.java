@@ -6,6 +6,8 @@ import com.example.demo.services.AllProductServiceImpl;
 
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping("/select/{id}")  //https://localhost:8080/product/select/id
-    public String selectOneProduct(@PathVariable(value = "id") int id, Model model) throws Exception {
+    public String selectOneProduct(@PathVariable("id") int id, Model model) throws Exception {
         model.addAttribute("productList", productService.selectOneProductById(id));
         return "product-one-show-page";
     }
@@ -45,7 +47,7 @@ public class ProductController {
         model.addAttribute("productList", productService.insertNewProductByObject(product));
         return "insert-product-page";
     }*/
-    
+    /*
     @GetMapping("/insertProductByObject")
     public String showInsertProductForm(Model model) {
         Product product = new Product(); // Create an empty product object
@@ -58,19 +60,19 @@ public class ProductController {
     public String insertProduct(Product product) throws Exception {
         productService.insertNewProductByObject(product); // Call the service to save the product
         return "redirect:/product/selectAll"; // Redirect to the product list page after insertion
-    }
+    }*/
     
     
     
  // GET Mapping: Show the form to insert a new product
-    @GetMapping("/insertProductByParams")
+    @GetMapping("/insertProduct")
     public String showInsertProductForm1(Model model) {
         // Adding a new, empty Product object to bind form fields
         model.addAttribute("product", new Product());
-        return "insert-product-page-params";  
+        return "insert-product-page";  
     }
     
-    @PostMapping("/insertProductByParams")
+    @PostMapping("/insertProduct")
     public String insertProduct(
             @ModelAttribute @Valid Product product,   // Bind the incoming form data to Product and validate it
             BindingResult result) {                   // To capture validation errors
@@ -81,7 +83,7 @@ public class ProductController {
         }
 
         // If no validation errors, insert the product
-        productService.insertNewProductByParameters(product);
+        productService.insertNewProduct(product);
 
         // Redirect to the product list page after insertion
         return "redirect:/product/selectAll";
@@ -114,9 +116,10 @@ public class ProductController {
     }*/
     
     @GetMapping("/delete/{id}")  //https://localhost:8080/product/delete/id
-    public String deleteById(@PathVariable(value = "id") int id, Model model) throws Exception {
-        model.addAttribute("productList", productService.deleteProductById(id));
-        return "redirect:/product/selectAll";
+    public String deleteById(@PathVariable("id") int id, Model model) throws Exception {
+    	productService.deleteProductById(id);
+        model.addAttribute(productService.retrieve());
+        return "product-all-show-page";
     }
     
     @GetMapping("/createProduct")
@@ -140,6 +143,35 @@ public class ProductController {
         return "redirect:/product/selectAll";
     }   
     
+    @GetMapping("/update/{id}")
+    public String showUpdateProductForm(@PathVariable("id") int id, Model model) throws Exception {
+    	Product updatedProduct = productService.selectOneProductById(id);
+    	model.addAttribute(updatedProduct);
+    	return "update-product-page";
+    }
 
+    @PostMapping("/update")
+    public String getUpdatedProductById(@Valid Product product, 
+			BindingResult result, @RequestParam("id") int id, Model model) throws Exception {
+    	
+    	if (result.hasErrors()) {
+            // If validation errors exist, return to the form with the validation errors
+            return "update-product-page";  // Replace with your form view name
+        }
+    	
+    	productService.update(id,product.getTitle(), product.getPrice(), product.getDescription(), 
+    			product.getQuantity(), product.getSurname(), product.getAge());
+    	return "redirect:/product/selectAll";
+    }
+    
+    @GetMapping("/price/{threshold}")
+    public String findAllProductsLessThanThreshold(@PathVariable("threshold") double threshold,
+    		Model model) throws Exception {
+		
+    	ArrayList<Product> allProducts = productService.filterByPriceLessThanThreshold(threshold);
+		model.addAttribute(allProducts);
+		return "product-all-show-page";
+    	
+    }
     
 }
