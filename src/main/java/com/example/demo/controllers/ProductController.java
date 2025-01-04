@@ -1,8 +1,8 @@
 package com.example.demo.controllers;
 
-import com.example.demo.ifaces.ICRUDProductService;
 import com.example.demo.models.Product;
-import com.example.demo.services.AllProductServiceImpl;
+import com.example.demo.services.ICRUDProductService;
+import com.example.demo.services.impl.AllProductServiceImpl;
 
 import jakarta.validation.Valid;
 

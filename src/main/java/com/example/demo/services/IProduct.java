@@ -1,4 +1,4 @@
-package com.example.demo.ifaces;
+package com.example.demo.services;
 
 import com.example.demo.models.Product;
 

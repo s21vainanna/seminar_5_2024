@@ -1,10 +1,10 @@
-package com.example.demo.services;
+package com.example.demo.services.impl;
 
-import com.example.demo.ifaces.ICRUDProductService;
-import com.example.demo.ifaces.IFilterProductService;
-import com.example.demo.ifaces.IProduct;
 import com.example.demo.models.Product;
 import com.example.demo.repo.ProductRepository;
+import com.example.demo.services.ICRUDProductService;
+import com.example.demo.services.IFilterProductService;
+import com.example.demo.services.IProduct;
 
 import jakarta.annotation.PostConstruct;
 
